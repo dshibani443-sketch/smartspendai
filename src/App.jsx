@@ -17,18 +17,18 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path="/Dashboard" 
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" 
           element={
                 <ProtectedRoute>
                   <Dashboard/>
                 </ProtectedRoute>
           } />
-          <Route path="/Forgotpass" element={<Forgotpass/>}/>
-          <Route path="/Verifyotp" element={<VerifyOTP/>}/>
-          <Route path="/Newpassword" element={<NewPassword/>}/>
-          <Route path="/Income" element={<Income/>}/>
-          <Route path="/Expense" element={<Expense/>}/>
+          <Route path="/forgotpass" element={<Forgotpass/>}/>
+          <Route path="/verifyotp" element={<VerifyOTP/>}/>
+          <Route path="/newpassword" element={<NewPassword/>}/>
+          <Route path="/income" element={<Income/>}/>
+          <Route path="/expense" element={<Expense/>}/>
           
         </Routes>
       </BrowserRouter>

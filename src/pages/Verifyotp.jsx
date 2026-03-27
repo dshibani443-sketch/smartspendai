@@ -1,16 +1,42 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import API from "../services/api";
-
 
 function VerifyOTP() {
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state?.email;
+
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+    const expiresAt = location.state?.expiresAt;
+
+    const calculateTimeLeft = () => {
+        const now = Date.now();
+        const diff = Math.floor((expiresAt - now) / 1000);
+        return diff > 0 ? diff : 0;
+    };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
     const inputRefs = useRef([]);
 
+    // ✅ Countdown Timer
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    // ✅ Format time (MM:SS)
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+    };
+
+    // ✅ Handle OTP input
     const handleChange = (value, index) => {
         if (!/^[0-9]?$/.test(value)) return;
 
@@ -18,18 +44,19 @@ function VerifyOTP() {
         newOtp[index] = value;
         setOtp(newOtp);
 
-        // Move to next box
         if (value && index < 5) {
             inputRefs.current[index + 1].focus();
         }
     };
 
+    // ✅ Backspace handling
     const handleBackspace = (e, index) => {
         if (e.key === "Backspace" && !otp[index] && index > 0) {
             inputRefs.current[index - 1].focus();
         }
     };
 
+    // ✅ Submit OTP
     const handleSubmit = async () => {
         const finalOtp = otp.join("");
 
@@ -38,15 +65,17 @@ function VerifyOTP() {
             return;
         }
 
+        if (timeLeft <= 0) {
+            alert("OTP expired. Please resend.");
+            return;
+        }
+
         try {
             const res = await API.post("/auth/verify-otp", {
                 email: email,
-                otp: finalOtp
+                otp: finalOtp,
             });
 
-            console.log(res.data);
-
-            // ✅ check backend response instead of status
             if (res.data.success) {
                 sessionStorage.setItem("reset_token", res.data.reset_token);
 
@@ -56,22 +85,51 @@ function VerifyOTP() {
             } else {
                 alert(res.data.message || "Invalid OTP");
             }
-
         } catch (error) {
             alert(error.response?.data?.message || "Something went wrong");
         }
     };
 
-    return (
-        <div className="flex flex-col items-center justify-center h-screen gap-4">
-            <div className="w-180 h-100 flex flex-col items-center bg-white shadow-2xl rounded-2xl">
+    // ✅ Resend OTP
+    const handleResend = async () => {
+        try {
+            const res = await API.post("/auth/resend-otp", { email });
 
-                <h2 className="text-5xl text-green-600 mt-5">OTP Verification</h2>
-                <p className="my-5 text-xl">
-                    Please enter the otp sent to your register email to complete your verification.
+            // 🔥 get new expiry from backend
+            const newExpiresAt = res.data.expiresAt;
+
+            // update expiry reference
+            location.state.expiresAt = newExpiresAt;
+
+            setTimeLeft(Math.floor((newExpiresAt - Date.now()) / 1000));
+
+            setOtp(["", "", "", "", "", ""]);
+
+            alert("OTP resent successfully");
+        } catch (err) {
+            if (err.response) {
+                console.log("Backend error:", err.response);
+                alert(err.response.data.detail);
+            } else {
+                alert("Server error");
+            }
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-center h-screen gap-4 bg-gray-100">
+            <div className="w-150 h-80 p-8 flex flex-col items-center bg-white shadow-2xl rounded-2xl">
+
+                <h2 className="text-3xl font-bold text-green-600 mb-2">
+                    OTP Verification
+                </h2>
+
+                <p className="text-gray-600 text-2xl text-center mb-6">
+                    Enter the OTP sent to your registered email
                 </p>
 
-                <div className="flex gap-3 mt-5">
+                {/* OTP Inputs */}
+                <div className="flex gap-3">
                     {otp.map((digit, index) => (
                         <input
                             key={index}
@@ -79,26 +137,47 @@ function VerifyOTP() {
                             maxLength="1"
                             value={digit}
                             ref={(el) => (inputRefs.current[index] = el)}
-                            onChange={(e) => handleChange(e.target.value, index)}
-                            onKeyDown={(e) => handleBackspace(e, index)}
-                            className="w-12 h-12 text-center border rounded text-lg"
+                            onChange={(e) =>
+                                handleChange(e.target.value, index)
+                            }
+                            onKeyDown={(e) =>
+                                handleBackspace(e, index)
+                            }
+                            className="w-12 h-12 text-center border rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                         />
                     ))}
                 </div>
 
-                <div className="flex flex-row justify-between w-95 mt-5 text-sm">
-                    <p className="text-gray-500 text-xl">
-                        Remaining time: <span className="text-indigo-600">00:59s</span>
+                {/* Timer + Resend */}
+                <div className="flex justify-between w-full mt-6 text-sm">
+                    <p className="text-gray-500">
+                        Remaining time:{" "}
+                        <span className="text-indigo-600 font-semibold">
+                            {timeLeft > 0 ? formatTime(timeLeft) : "Expired"}
+                        </span>
                     </p>
 
-                    <button className="text-indigo-600 text-xl">
+                    <button
+                        onClick={handleResend}
+                        disabled={timeLeft > 0}
+                        className={`font-semibold ${timeLeft > 0
+                            ? "text-gray-800 cursor-not-allowed"
+                            : "text-indigo-600 hover:underline"
+                            }`}
+                    >
                         Resend
                     </button>
                 </div>
 
+                {/* Verify Button */}
                 <button
                     onClick={handleSubmit}
-                    className="px-6 py-2 bg-blue-500 text-white rounded mt-8 hover:bg-amber-600"
+                    disabled={timeLeft <= 0}
+                    className={`w-full py-2 mt-6 rounded-lg text-white font-semibold transition 
+                    ${timeLeft <= 0
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-amber-600"
+                        }`}
                 >
                     Verify OTP
                 </button>

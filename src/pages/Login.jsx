@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-// import News3 from '../images/News3.jpg';
 import { FcGoogle } from "react-icons/fc";
 import { MdEmail } from "react-icons/md";
-import { FaLock } from "react-icons/fa";
-// import { NavLink } from 'react-router-dom';
+import { FaLock, FaEye, FaEyeSlash} from "react-icons/fa";
 import spend from "../assets/images/spend.png";
 import logo from "../assets/images/logo.png";
 import { FaCheck } from "react-icons/fa";
@@ -13,7 +11,7 @@ import API from "../services/api";
 
 
 function Login() {
-
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
@@ -46,8 +44,13 @@ function Login() {
 
             navigate("/dashboard");
 
-        } catch (error) {
-            alert("Invalid email or password");
+        } catch (err) {
+            if (err.response) {
+                console.log("Backend error:", err.response);
+                alert(err.response.data.detail);
+            } else {
+                alert("Server error");
+            }
         }
     };
 
@@ -56,86 +59,138 @@ function Login() {
 
     return (
 
-        <main className='flex flex-col items-center justify-center w-full flex-1 px-20 text-center h-screen'>
-            <div className='rounded-2xl shadow-2xl flex w-2/3 max-w-4xl'>
-                <div className='w-3/5  '>
-                    <div className=" mx-10" style={{
-                        width: "70px",
-                        height: "70px",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                        backgroundImage: `url(${logo})`
-                    }}>
-                        <span className='text-2xl font-bold relative left-[60px] top-[18px]'>SmartSpend</span><span className='text-left text-2xl font-bold text-blue-400 relative left-[65px] top-[18px]'>AI</span>
+        <main className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
+            <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+                {/* LEFT SIDE (FORM) */}
+                <div className="w-full md:w-1/2 p-6 md:p-10">
+
+                    {/* Logo */}
+                    <div className="flex items-center gap-1 mb-6">
+                        <img src={logo} alt="logo" className="w-20 h-20" />
+                        <h1 className="text-3xl font-bold">
+                            SmartSpend <span className="text-blue-400">AI</span>
+                        </h1>
                     </div>
-                    <div className="py-1">
-                        <h2 className="text-3xl   mb-2">Welcome back to <span className='font-bold'>SmartSpend</span></h2>
-                        <p className='leading-[3]'>Sign in to continue to your account</p>
 
-                        <div className="flex flex-col items-center">
-                            <form onSubmit={handleLogin}>
-                                <div className="bg-gray-100 w-95 rounded-xl p-2 flex items-center  text-xl mb-4 ">
-                                    <MdEmail className="text-gray-400 m-2" />
-                                    <input type="email" onChange={handleChange} placeholder='Email' name='email' required className='outline-none w-95' />
-                                </div>
-                                <div className="bg-gray-100 w-95 rounded-xl p-2 flex items-center  text-xl mb-4 ">
-                                    <FaLock className="text-gray-400 m-2" />
-                                    <input type="password" onChange={handleChange} placeholder='password' name='password' required className='outline-none w-95' />
-                                </div>
+                    {/* Heading */}
+                    <h2 className="text-xl ml-5 md:text-3xl mb-2">
+                        Welcome back to <span className="font-bold">SmartSpend</span>
+                    </h2>
+                    <p className="text-gray-700 ml-22 mb-6">
+                        Sign in to continue to your account
+                    </p>
 
+                    {/* FORM */}
+                    <form onSubmit={handleLogin} className="space-y-4">
 
+                        {/* Email */}
+                        <div className="bg-gray-100 rounded-xl p-3 flex items-center">
+                            <MdEmail className="text-gray-400 mr-2" />
+                            <input
+                                type="email"
+                                name="email"
+                                onChange={handleChange}
+                                placeholder="Email"
+                                className="bg-transparent outline-none w-full"
+                            />
+                        </div>
 
-                                <div className="flex w-95 mb-5 justify-between leading-1">
-                                    <label className='flex items-center text-black'>
-                                        <input type="checkbox" name='remember' className='mr-1' />
-                                        Remember Me</label>
-                                    <NavLink to="/Forgotpass" className='text-blue-600'>Forgot Password?</NavLink>
-                                </div>
-                                <div className='leading-5'>
-                                    <button type='submit' className=' w-90 rounded-xl px-12 py-2  inline-block font-semibold text-white bg-blue-600 hover:bg-green-500 hover:text-white '>Sign in →
-                                    </button>
-                                </div>
-                            </form>
+                        {/* Password */}
+                        <div className="bg-gray-100 rounded-xl p-3 flex items-center justify-between">
 
-                            <div className="flex items-center w-90 mt-5">
-                                <div className="flex-grow border-t border-gray-400"></div>
+                            <div className="flex items-center w-full">
+                                <FaLock className="text-gray-400 mr-2" />
 
-                                <span className="mx-4 text-gray-600 text-sm">OR CONTINUE WITH</span>
-
-                                <div className="flex-grow border-t border-gray-400"></div>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    autoComplete="new-password"
+                                    onChange={handleChange}
+                                    placeholder="Password"
+                                    className="bg-transparent outline-none w-full"
+                                />
                             </div>
 
-                            <div className="flex items-center justify-center border-gray-400  p-2 shadow-md rounded-xl my-2 w-90 mt-10">
-                                <a href="" className=' flex '>
-                                    <FcGoogle className='text-2xl ' />
-                                    <span className='ml-1'>Continue with Google</span>
-                                </a>
-                            </div>
-                            <div className='mt-4'>Dont have an Account!
-                                <NavLink to="/Register" className='text-blue-500 underline'>Sign up</NavLink>
-                            </div>
-
-
-
+                            {/* Eye Icon */}
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-500 ml-2"
+                            >
+                                {showPassword ? <FaEye /> : <FaEyeSlash />  }
+                            </button>
 
                         </div>
-                    </div>
-                </div>
-                <div className='w-3/7 rounded-tr-2xl rounded-br-2xl py-36 px-12' style={{
-                    width: "450px",
-                    height: "600px",
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundImage: `url(${spend})`
-                }} >
-                    <div className='relative right-[70px] bottom-[120px] text-3xl text-white'>
-                        <h2>SmartSpend <span className='text-blue-300'>AI</span></h2>
-                        <h4 className=' text-xl'><FaCheck className='relative left-[60px] top-[20px] text-sm' />Track Expenses</h4>
 
-                        <h4 className=' text-xl'><FaCheck className='relative left-[60px] top-[20px] text-sm' /><span className='relative left-[40px]'> Predict future spending</span></h4>
-                        <h4 className=' text-xl'><FaCheck className='relative left-[60px] top-[20px] text-sm' /> <span className='relative left-[30px]'>Secure your finances</span></h4>
+                        {/* Remember + Forgot */}
+                        <div className="flex justify-between text-sm">
+                            <label className="flex items-center gap-1">
+                                <input type="checkbox" />
+                                Remember me
+                            </label>
+                            <NavLink to="/Forgotpass" className="text-blue-600">
+                                Forgot Password?
+                            </NavLink>
+                        </div>
+
+                        {/* Button */}
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-amber-300 transition"
+                        >
+                            Sign in →
+                        </button>
+                    </form>
+
+                    {/* Divider */}
+                    <div className="flex items-center my-6">
+                        <div className="flex-grow border-t"></div>
+                        <span className="mx-3 text-sm text-gray-500">OR</span>
+                        <div className="flex-grow border-t"></div>
+                    </div>
+
+                    {/* Google */}
+                    <a
+                        href="https://smartspend-ai-68ou.onrender.com/auth/google"
+                        className="flex items-center justify-center gap-2  p-3 rounded-xl shadow-lg hover:bg-amber-300 transition"
+                    >
+                        <FcGoogle className="text-xl" />
+                        Continue with Google
+                    </a>
+
+                    {/* Register */}
+                    <p className="mt-4 text-sm text-center">
+                        Don't have an account?{" "}
+                        <NavLink to="/Register" className="text-blue-500 underline">
+                            Sign up
+                        </NavLink>
+                    </p>
+                </div>
+
+                {/* RIGHT SIDE (IMAGE) */}
+                <div
+                    className="hidden md:flex md:w-1/2 text-white "
+                    style={{
+                        backgroundImage: `url(${spend})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                >
+                    <div className="p-6  rounded-xl">
+                        <h2 className="text-4xl mb-4">
+                            SmartSpend <span className="text-blue-300">AI</span>
+                        </h2>
+
+                        <p className="flex items-center mb-2">
+                            <FaCheck className="mr-2" /> Track Expenses
+                        </p>
+                        <p className="flex items-center mb-2">
+                            <FaCheck className="mr-2" /> Predict future spending
+                        </p>
+                        <p className="flex items-center ">
+                            <FaCheck className="mr-2" /> Secure your finances
+                        </p>
                     </div>
                 </div>
 
