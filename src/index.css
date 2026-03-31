@@ -13,4 +13,10 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   pointer-events: none;
 }
 
+/* global css in total body */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
 

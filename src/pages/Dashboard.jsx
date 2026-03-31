@@ -26,13 +26,13 @@ function Dashboard() {
   return (
     <>
 
-      <div className="flex h-screen bg-slate-100">
+      <div className="flex min-h-screen bg-slate-100 overflow-hidden">
 
         {/* Sidebar */}
         <Sidebar />
 
         {/* Right Section */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col overflow-x-hidden">
 
           {/* Header */}
           <Header />
