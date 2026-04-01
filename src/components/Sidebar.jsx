@@ -14,11 +14,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar() {
     const navigate = useNavigate();
+
+
     
-    const handleLogout = () => {
-        localStorage.removeItem("token"); // remove JWT token
-        navigate("/");               // redirect to login page
-    };
+    
     return (
         <div className="h-screen w-70 bg-slate-900 text-white flex flex-col justify-between">
 
@@ -76,7 +75,9 @@ function Sidebar() {
                         Settings
                     </li>
                     <li>
-                        <button onClick={handleLogout} className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800">
+                        {/* added by hasanur */}
+                        <button onClick={() => navigate("/logout")}
+                        className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
                             <LogOut size={20} />
                             Logout
                         </button>
