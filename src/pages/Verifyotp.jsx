@@ -8,26 +8,30 @@ function VerifyOTP() {
     const email = location.state?.email;
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-    const expiresAt = location.state?.expiresAt;
+    const [expiresAtState, setExpiresAtState] = useState(location.state?.expiresAt);
 
     const calculateTimeLeft = () => {
-        const now = Date.now();
-        const diff = Math.floor((expiresAt - now) / 1000);
-        return diff > 0 ? diff : 0;
-    };
+    if (!expiresAtState) return 0;
+    const now = Date.now();
+    const diff = Math.floor((expiresAtState - now) / 1000);
+    return diff > 0 ? diff : 0;
+};
 
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
+const [timeLeft, setTimeLeft] = useState(0);
     const inputRefs = useRef([]);
 
     // ✅ Countdown Timer
     useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
+    if (!expiresAtState) return;
 
-        return () => clearInterval(timer);
-    }, []);
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, [expiresAtState]);
 
     // ✅ Format time (MM:SS)
     const formatTime = (seconds) => {
@@ -92,29 +96,21 @@ function VerifyOTP() {
 
     // ✅ Resend OTP
     const handleResend = async () => {
-        try {
-            const res = await API.post("/auth/resend-otp", { email });
+    try {
+        const res = await API.post("/auth/resend-otp", { email });
 
-            // 🔥 get new expiry from backend
-            const newExpiresAt = res.data.expiresAt;
+        const newExpiresAt = res.data.expiresAt;
 
-            // update expiry reference
-            location.state.expiresAt = newExpiresAt;
+        // ✅ update state instead of mutating location
+        setExpiresAtState(newExpiresAt);
 
-            setTimeLeft(Math.floor((newExpiresAt - Date.now()) / 1000));
+        setOtp(["", "", "", "", "", ""]);
 
-            setOtp(["", "", "", "", "", ""]);
-
-            alert("OTP resent successfully");
-        } catch (err) {
-            if (err.response) {
-                console.log("Backend error:", err.response);
-                alert(err.response.data.detail);
-            } else {
-                alert("Server error");
-            }
-        }
-    };
+        alert("OTP resent successfully");
+    } catch (err) {
+        alert(err.response?.data?.detail || "Server error");
+    }
+};
 
     return (
         <div className="flex flex-col items-center justify-center h-screen gap-4 bg-gray-100">

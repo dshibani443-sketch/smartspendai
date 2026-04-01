@@ -9,19 +9,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    API.get("/auth/me")
-      .then(res => {
-        setUser(res.data);   // store user data
-      })
-      .catch(() => {
-        navigate("/");  // redirect if not logged in
-      });
-  }, []);
-  console.log(user);
+  
 
   return (
     <>

@@ -1,6 +1,5 @@
 // import React from "react";
 import logo from "../assets/images/logo.png";
-
 import {
     Home,
     Wallet,
@@ -11,9 +10,15 @@ import {
     Settings,
     LogOut
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar() {
+    const navigate = useNavigate();
+    
+    const handleLogout = () => {
+        localStorage.removeItem("token"); // remove JWT token
+        navigate("/");               // redirect to login page
+    };
     return (
         <div className="h-screen w-70 bg-slate-900 text-white flex flex-col justify-between">
 
@@ -42,13 +47,13 @@ function Sidebar() {
                     <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
                         <Wallet size={20} />
                         <NavLink to="/income">Income</NavLink> {/* page add methode is that*/}
-                        
+
                     </li>
 
                     <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
                         <CreditCard size={20} />
                         <NavLink to="/Expense">Expenses</NavLink> {/* page add methode is that*/}
-                        
+
                     </li>
 
                     <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
@@ -71,7 +76,7 @@ function Sidebar() {
                         Settings
                     </li>
                     <li>
-                        <button className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800">
+                        <button onClick={handleLogout} className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800">
                             <LogOut size={20} />
                             Logout
                         </button>
