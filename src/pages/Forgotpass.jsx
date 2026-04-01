@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
 import API from "../services/api";
+import { toast } from "react-toastify";
 
 
 function ForgotPassword() {
@@ -15,14 +16,15 @@ function ForgotPassword() {
         console.log(res); //later remove
 
         if (res.data.success) {   // check backend flag
-            alert("OTP sent to your email");
-            navigate("/verifyotp", { state: { email } });
+            toast.success("Otp send Successfully.")
+            navigate("/verifyotp", { state: { email , 
+                expiresAt:res.data.expiresAt } });//this is new line add by me
         } else {
-            alert(res.data.message || "Failed to send OTP");
+            toast.error(res.data.message || "Failed to send OTP");
         }
 
     } catch (error) {
-        alert(error.response?.data?.message || "Error sending OTP");
+        toast.error(error.response?.data?.message || "Error sending OTP");
     }
 };
 

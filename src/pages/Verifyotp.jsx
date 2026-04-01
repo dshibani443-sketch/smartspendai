@@ -9,29 +9,46 @@ function VerifyOTP() {
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [expiresAtState, setExpiresAtState] = useState(location.state?.expiresAt);
+    //restore expiry otp                            //new line|code add by me
+    useEffect(() => {
+        if (!expiresAtState) {
+            const saved = sessionStorage.getItem("otp_expiry");
+            if (saved) {
+                setExpiresAtState(Number(saved));
+            }
+        }
+    }, []);
 
     const calculateTimeLeft = () => {
-    if (!expiresAtState) return 0;
-    const now = Date.now();
-    const diff = Math.floor((expiresAtState - now) / 1000);
-    return diff > 0 ? diff : 0;
-};
+        if (!expiresAtState) return 0;
+        const now = Date.now();
+        const diff = Math.floor((expiresAtState - now) / 1000);
+        return diff > 0 ? diff : 0;
+    };
 
-const [timeLeft, setTimeLeft] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(0);
     const inputRefs = useRef([]);
 
     // ✅ Countdown Timer
     useEffect(() => {
-    if (!expiresAtState) return;
+        
+        if (!expiresAtState) return;
 
-    setTimeLeft(calculateTimeLeft());
-
-    const timer = setInterval(() => {
         setTimeLeft(calculateTimeLeft());
-    }, 1000);
 
-    return () => clearInterval(timer);
-}, [expiresAtState]);
+        const timer = setInterval(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [expiresAtState]);
+
+    // ✅ Save expiry (ADD HERE)                   //new line|code add by me
+    useEffect(() => {
+        if (expiresAtState) {
+            sessionStorage.setItem("otp_expiry", expiresAtState);
+        }
+    }, [expiresAtState]);
 
     // ✅ Format time (MM:SS)
     const formatTime = (seconds) => {
@@ -96,21 +113,21 @@ const [timeLeft, setTimeLeft] = useState(0);
 
     // ✅ Resend OTP
     const handleResend = async () => {
-    try {
-        const res = await API.post("/auth/resend-otp", { email });
+        try {
+            const res = await API.post("/auth/resend-otp", { email });
 
-        const newExpiresAt = res.data.expiresAt;
+            const newExpiresAt = res.data.expiresAt;
 
-        // ✅ update state instead of mutating location
-        setExpiresAtState(newExpiresAt);
+            // ✅ update state instead of mutating location
+            setExpiresAtState(newExpiresAt);
 
-        setOtp(["", "", "", "", "", ""]);
+            setOtp(["", "", "", "", "", ""]);
 
-        alert("OTP resent successfully");
-    } catch (err) {
-        alert(err.response?.data?.detail || "Server error");
-    }
-};
+            alert("OTP resent successfully");
+        } catch (err) {
+            alert(err.response?.data?.detail || "Server error");
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center h-screen gap-4 bg-gray-100">
