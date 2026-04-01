@@ -79,10 +79,10 @@ function Login() {
 
             navigate("/dashboard");
 
-        } catch (error) {
-             if (error.response) {
+        } catch (err) {
+             if (err.response) {
                 console.log("Backend error:", err.response);
-                toast.error(error.response.data.detail)
+                toast.error(err.response.data.detail)
 
             } else {
                 toast.error("Server error")
