@@ -23,6 +23,11 @@ import { toast } from 'react-toastify';  // add by hasanur
 
 
 function Login() {
+
+    const handleGoogleLogin = () =>{
+        window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+    };
+    
     const [showPassword, setShowPassword] = useState(false);
     const { setUser } = useContext(AuthContext)
 
@@ -59,7 +64,7 @@ function Login() {
 
             // Step 1: login (cookie set here)
             const res = await API.post("/auth/login", form);
-            console.log(res);//remove later
+            console.log(res.data);//remove later
 
             // Step 2: get user data
 
@@ -202,11 +207,10 @@ function Login() {
                                 <div className="flex-grow border-t border-gray-400"></div>
                             </div>
 
-                            <div className="flex items-center justify-center border-gray-400  p-2 shadow-md rounded-xl my-2 w-90 mt-10">
-                                <a href="" className=' flex '>
+                            <div onClick={handleGoogleLogin}
+                                 className="flex items-center justify-center border-gray-400  p-2 shadow-md rounded-xl my-2 w-90 mt-10">                                
                                     <FcGoogle className='text-2xl ' />
                                     <span className='ml-1'>Continue with Google</span>
-                                </a>
                             </div>
                             <div className='mt-4'>Dont have an Account!
                                 <NavLink to="/Register" className='text-blue-500 underline'>Sign up</NavLink>
