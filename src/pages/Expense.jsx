@@ -122,6 +122,14 @@ export default function ExpensePage() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Expense</h1>
+        <span className="flex gap-3">
+
+          <button
+            onClick={() => (window.location.href = "/dashboard")}
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-xl shadow-lg"
+          >
+            Dashboard
+          </button>
 
         <button
           onClick={() => {
@@ -132,6 +140,7 @@ export default function ExpensePage() {
         >
           + Add Expense
         </button>
+        </span>
       </div>
 
       {/* Total Card */}

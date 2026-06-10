@@ -18,7 +18,7 @@ export default function IncomePage() {
 
   const [customSource, setCustomSource] = useState("");
 
-  
+
 
   // ✅ Fetch income from backend
   const fetchIncome = async () => {
@@ -78,7 +78,7 @@ export default function IncomePage() {
 
     try {
       //for data storing 
-      
+
       setLoading(true);
 
       await API.post(`/income/`, finalData);
@@ -106,13 +106,21 @@ export default function IncomePage() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Income</h1>
+        <span className="flex gap-3">
+          <button
+            onClick={() => (window.location.href = "/dashboard")}
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-xl shadow-lg"
+          >
+            Dashboard
+          </button>
 
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl shadow-lg"
-        >
-          + Add Income
-        </button>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl shadow-lg"
+          >
+            + Add Income
+          </button>
+        </span>
       </div>
 
       {/* Total Card */}

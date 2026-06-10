@@ -210,7 +210,7 @@ function Login() {
                             <div onClick={handleGoogleLogin}
                                  className="flex items-center justify-center border-gray-400  p-2 shadow-md rounded-xl my-2 w-90 mt-10">                                
                                     <FcGoogle className='text-2xl ' />
-                                    <span className='ml-1'>Continue with Google</span>
+                                    <span className='ml-1 cursor-pointer'>Continue with Google</span>
                             </div>
                             <div className='mt-4'>Dont have an Account!
                                 <NavLink to="/Register" className='text-blue-500 underline'>Sign up</NavLink>
