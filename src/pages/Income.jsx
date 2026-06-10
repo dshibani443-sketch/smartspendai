@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
-import axios from "axios";
+import API from "../services/api"; // ✅ API Base URL
 
 export default function IncomePage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,20 +18,19 @@ export default function IncomePage() {
 
   const [customSource, setCustomSource] = useState("");
 
-  // ✅ API Base URL
-  // const API = "http://localhost:5000/api";
+  
 
   // ✅ Fetch income from backend
   const fetchIncome = async () => {
     try {
-      const res = await axios.get(`${API}/income`);
+      const res = await API.get(`/income/`);
       setIncomeList(res.data.data || []);
     } catch (error) {
       toast.error("Failed to load data");
     }
   };
 
-    // ✅ Run on page load
+  // ✅ Run on page load
   useEffect(() => {
     fetchIncome();
   }, []);
@@ -40,7 +39,7 @@ export default function IncomePage() {
 
 
 
-//total icome section
+  //total icome section
   const totalIncome = incomeList.reduce(
     (acc, item) => acc + Number(item.amount),
     0
@@ -62,6 +61,10 @@ export default function IncomePage() {
       toast.error("Please fill required fields");
       return;
     }
+    if (form.source === "custom" && !customSource.trim()) {
+      toast.error("Please enter custom source");
+      return;
+    }
 
     if (amount <= 0) {
       toast.error("Amount must be greater than 0");
@@ -75,21 +78,24 @@ export default function IncomePage() {
 
     try {
       //for data storing 
-      // here be added the api backend logic and here was now a ststic flow it will be gone all try section and required try section will on income.txt
+      
       setLoading(true);
 
-      await axios.post(`${API}/income`, finalData);
+      await API.post(`/income/`, finalData);
 
       // ✅ Always refresh from backend
       await fetchIncome();
 
-      toast.success("Income Added ");
+      toast.success("Income Added Successfully");
 
       resetForm();
       setIsOpen(false);
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error(
+        error.response?.data?.message || "Something went wrong"
+      );
     } finally {
+
       setLoading(false);
     }
   };
@@ -117,9 +123,9 @@ export default function IncomePage() {
 
       {/* Income List */}
       <div className="space-y-4">
-        {incomeList.map((item, index) => (
+        {incomeList.map((item) => (
           <div
-            key={index}
+            key={item.id}
             className="bg-slate-800 p-4 rounded-xl flex justify-between items-center hover:scale-[1.02] transition"
           >
             <div>
@@ -231,7 +237,10 @@ export default function IncomePage() {
                 <div className="flex gap-3 pt-2">
 
                   <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      resetForm();
+                      setIsOpen(false);
+                    }}
                     className="w-1/2 bg-gray-500 py-2 rounded"
                   >
                     Cancel
@@ -254,4 +263,5 @@ export default function IncomePage() {
       </AnimatePresence>
     </div>
   );
-}
+
+};

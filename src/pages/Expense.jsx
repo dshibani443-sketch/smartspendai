@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 
 //this will be added by me
-import axios from "axios";
+import API from "../services/api"; // ✅ API Base URL
 
 
 
@@ -22,15 +22,14 @@ export default function ExpensePage() {
 
   const [customCategory, setCustomCategory] = useState("");
 
-   // ✅ API Base URL (here will be changed )
-  // const API = "http://localhost:5000/api";
 
 
- 
+
+
 
   const fetchExpenses = async () => {                    //this function and 77 no line must be uncommand together
     try {
-      const res = await axios.get(`${API}/expense`);
+      const res = await API.get(`/expense/`);
       setExpenseList(res.data.data || []);
     } catch (err) {
       toast.error("Failed to load data");
@@ -38,12 +37,12 @@ export default function ExpensePage() {
   };
 
 
-  
 
-//run on page load
-  // useEffect(() => {
-  //   fetchExpenses();
-  // }, []);
+
+  //run on page load
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
 
 
 
@@ -53,10 +52,34 @@ export default function ExpensePage() {
     0
   );
 
+  const resetForm = () => {
+    setForm({
+      category: "",
+      amount: "",
+      date: "",
+      note: "",
+    });
+
+    setCustomCategory("");
+  };
+
   // ✅ Submit to before return must be edit.
   const handleSubmit = async () => {
+
     if (!form.category || !form.amount) {
       toast.error("Please fill required fields");
+      return;
+    }
+
+    if (form.category === "custom" && !customCategory.trim()) {
+      toast.error("Please enter custom category");
+      return;
+    }
+
+    const amount = Number(form.amount);
+
+    if (amount <= 0) {
+      toast.error("Amount must be greater than 0");
       return;
     }
 
@@ -72,25 +95,21 @@ export default function ExpensePage() {
 
       setLoading(true);
 
-      await axios.post(`${API}/expense`, newExpense);
+      await API.post(`/expense/`, newExpense);
 
       // 🔄 Refresh list
-      // await fetchExpenses();
+      await fetchExpenses();
 
+      toast.success("Expense Added Successfully");
 
-      setForm({
-        category: "",
-        amount: "",
-        date: "",
-        note: "",
-      });
-
-      setCustomCategory("");
+      resetForm();
       setIsOpen(false);
 
     } catch (err) {
-      toast.error("Failed to save");
-    }finally{
+      toast.error(
+        err.response?.data?.message || "Something went wrong."
+      );
+    } finally {
       setLoading(false);
     }
 
@@ -105,7 +124,10 @@ export default function ExpensePage() {
         <h1 className="text-3xl font-bold">Expense</h1>
 
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            resetForm();
+            setIsOpen(true);
+          }}
           className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl shadow-lg"
         >
           + Add Expense
@@ -120,9 +142,9 @@ export default function ExpensePage() {
 
       {/* Expense List */}
       <div className="space-y-4">
-        {expenseList.map((item, index) => (
+        {expenseList.map((item) => (
           <div
-            key={item.id}   
+            key={item.id}
             className="bg-slate-800 p-4 rounded-xl flex justify-between items-center hover:scale-[1.02] transition"
           >
             <div>
@@ -231,7 +253,10 @@ export default function ExpensePage() {
                 <div className="flex gap-3 pt-2">
 
                   <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      resetForm();
+                      setIsOpen(false);
+                    }}
                     className="w-1/2 bg-gray-500 py-2 rounded"
                   >
                     Cancel
