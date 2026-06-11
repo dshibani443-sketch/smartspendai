@@ -22,6 +22,9 @@ export default function TransactionsPage() {
         API.get("/expense/"),
       ]);
 
+      console.log("Income Response:", incomeRes.data); // Debug log
+      console.log("Expense Response:", expenseRes.data); // Debug log
+
       setIncomeList(
         Array.isArray(incomeRes.data.data) ? incomeRes.data.data : []
       );
@@ -29,6 +32,7 @@ export default function TransactionsPage() {
         Array.isArray(expenseRes.data.data) ? expenseRes.data.data : []
       );
     } catch (error) {
+      console.error("Error fetching transactions:", error); // Debug log
       toast.error(
         error.response?.data?.message || "Failed to fetch transactions"
       );

@@ -108,7 +108,9 @@ export default function ExpensePage() {
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Something went wrong."
+      
       );
+      console.log(err); // this line to be remove later
     } finally {
       setLoading(false);
     }
