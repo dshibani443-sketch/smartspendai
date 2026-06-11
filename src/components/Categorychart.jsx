@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 
 import {
@@ -12,11 +12,37 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CategoryChart = () => {
 
-  const categories = [
-    { name: "Food", amount: 500, color: "#22c55e" },
-    { name: "Shopping", amount: 2300, color: "#f59e0b" },
-    { name: "Bills", amount: 600, color: "#3b82f6" },
-  ];
+  const [categoryData, setCategoryData] = useState([]);
+
+  useEffect(() => {
+    fetchCategoryExpense();
+  }, []);
+
+  const fetchCategoryExpense = async () => {
+
+    // ==========================
+    // CATEGORY EXPENSE API
+    // GET /api/dashboard/category-expense
+    //
+    // Response:
+    // [
+    //   {
+    //      category:"Food",
+    //      amount:2000
+    //   }
+    // ]
+    // ==========================
+
+    // const res = await API.get(
+    //   "/dashboard/category-expense"
+    // );
+    //
+    // setCategoryData(res.data);
+
+  };
+
+
+  const categories = categoryData;
 
   // 🔢 Total Calculation
   const total = categories.reduce((sum, item) => sum + item.amount, 0);

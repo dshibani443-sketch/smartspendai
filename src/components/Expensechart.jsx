@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 
 // ✅ REQUIRED imports
@@ -11,7 +11,6 @@ import {
   Tooltip,
   Legend,
   Filler,
-  scales
 } from "chart.js";
 
 // ✅ REGISTER ONCE
@@ -26,12 +25,16 @@ ChartJS.register(
 );
 
 const ExpenseChart = () => {
+
+  const [chartData, setChartData] = useState([]);
+
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: chartData.map(item => item.month),
+
     datasets: [
       {
         label: "Expenses",
-        data: [12000, 15000, 18000, 22000, 28000, 32000],
+        data: chartData.map(item => item.expense),
         borderColor: "#3b82f6",
         backgroundColor: "rgba(59,130,246,0.2)",
         tension: 0.4,
@@ -39,6 +42,27 @@ const ExpenseChart = () => {
       },
     ],
   };
+
+
+
+  useEffect(() => {
+    fetchMonthlyExpense();
+  }, []);
+
+  const fetchMonthlyExpense = async () => {
+
+    // ==========================
+    // MONTHLY EXPENSE API
+    
+    // try {
+    //   const res = await API.get("/dashboard/monthly-expense");
+    //   setChartData(res.data);
+    // } catch (error) {
+    //   console.log(error);        
+    // }
+  };
+
+
 
   const options = {
     responsive: true,

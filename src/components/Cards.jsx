@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 import { Wallet, TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
 
 import Expensechart from "./Expensechart";
@@ -26,15 +26,27 @@ function Cards() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/dashboard");
 
-      // Expected response:
-      // { totalIncome, totalExpense, totalBalance, savings }
+      // ==========================
+      // DASHBOARD SUMMARY API
+      // GET /api/dashboard
+      //
+      // Response:
+      // {
+      //   totalIncome,
+      //   totalExpense,
+      //   totalBalance,
+      //   savings
+      // }
+      // ==========================
 
-      setData(res.data);
+      // const res = await API.get("/dashboard");
+      // setData(res.data);
+
     } catch (err) {
-      console.error("Error fetching dashboard:", err);
-    } finally {
+      console.log(err);                                 //this line to be remove later
+      // toast.error(err.response?.data?.message || "Failed to load dashboard");
+    }finally {
       setLoading(false);
     }
   };
@@ -90,37 +102,36 @@ function Cards() {
   // }
 
   return (
-    <div className="p-3">
+    <div className="p-4 sm:p-6">
 
       {/* 🔹 Top Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-3">
         {cards.map((card, index) => {
           const Icon = card.icon;
 
           return (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 flex items-center justify-between hover:shadow-md transition"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 flex items-center justify-between hover:shadow-md transition"
             >
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {card.title}
                 </p>
 
-                <h3 className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
+                <h3 className="text-2xl font-semibold mt-2 text-gray-800 dark:text-white">
                   {card.amount}
                 </h3>
 
-                <div className="flex items-center gap-2 text-sm mt-1">
+                <div className="flex flex-wrap items-center gap-2 text-sm mt-2">
                   <span className="text-gray-400">{card.subtitle}</span>
 
                   {card.extra && (
                     <span
-                      className={`font-medium ${
-                        card.extra.includes("+")
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
+                      className={`font-medium ${card.extra.includes("+")
+                        ? "text-green-500"
+                        : "text-red-500"
+                        }`}
                     >
                       {card.extra}
                     </span>
@@ -128,8 +139,8 @@ function Cards() {
                 </div>
               </div>
 
-              <div className={`p-3 rounded-xl ${card.color}`}>
-                <Icon size={20} />
+              <div className={`p-3 rounded-2xl ${card.color}`}>
+                <Icon size={22} />
               </div>
             </div>
           );
@@ -137,21 +148,21 @@ function Cards() {
       </div>
 
       {/* 🔹 Charts + AI Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
 
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
           <Expensechart />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
           <Categorychart />
         </div>
 
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
           <Recenttransactions />
         </div>
 
-        <div className="bg-gradient-to-br from-blue-900 to-blue-600 text-white p-4 rounded-xl shadow">
+        <div className="bg-linear-to-br from-blue-900 to-blue-600 text-white p-4 rounded-2xl shadow overflow-hidden">
           <AIPrediction />
         </div>
 

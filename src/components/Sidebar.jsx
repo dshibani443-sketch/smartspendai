@@ -14,29 +14,41 @@ import {
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar({ isOpen = false, onClose }) {
     const navigate = useNavigate();
     const {user} = useContext(AuthContext)
     console.log(user);
 
+    const sidebarClasses = `fixed inset-y-0 left-0 z-40 w-[280px] max-w-[80%] transform bg-slate-900 text-white flex flex-col justify-between transition-transform duration-300 shadow-xl sm:relative sm:translate-x-0 sm:w-70 sm:max-w-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`;
 
-    
-    
     return (
-        <div className="h-screen w-70 bg-slate-900 text-white flex flex-col justify-between">
+        <div className={sidebarClasses}>
+            <div className="flex items-center justify-between p-4 sm:hidden">
+                <div className="text-lg font-semibold">Menu</div>
+                <button
+                    type="button"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600"
+                    onClick={onClose}
+                    aria-label="Close menu"
+                >
+                    ✕
+                </button>
+            </div>
 
             {/* Top Section */}
-            <div>
+            <div className="px-4 pb-6">
                 {/* Logo */}
-                <div className="" style={{
-                    width: "70px",
-                    height: "70px",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundImage: `url(${logo})`
-                }}>
-                    <span className='text-2xl font-bold relative left-[60px] top-[18px]'>SmartSpend</span><span className='text-left text-2xl font-bold text-blue-400 relative left-[65px] top-[18px]'>AI</span>
+                <div className="flex items-center gap-4 mb-8">
+                    <div
+                        className="h-16 w-16 rounded-2xl bg-cover bg-center"
+                        style={{
+                            backgroundImage: `url(${logo})`
+                        }}
+                    />
+                    <div>
+                        <div className='text-xl font-bold'>SmartSpend</div>
+                        <div className='text-xl font-bold text-blue-400'>AI</div>
+                    </div>
                 </div>
 
                 {/* Menu */}
@@ -61,23 +73,14 @@ function Sidebar() {
 
                     <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
                         <Repeat size={20} />
-                        Transactions
+                        <NavLink to="/transactions">Transactions</NavLink>
                     </li>
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
-                        <Brain size={20} />
-                        AI Prediction
-                    </li>
+                    
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
-                        <ShieldAlert size={20} />
-                        Risk Analysis
-                    </li>
+                    
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
-                        <Settings size={20} />
-                        Settings
-                    </li>
+                    
                     <li>
                         {/* added by hasanur */}
                         <button onClick={() => navigate("/logout")}

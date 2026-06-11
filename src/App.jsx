@@ -13,6 +13,7 @@ import VerifyOTP from "./pages/Verifyotp";
 import NewPassword from "./pages/Newpassword";
 import Income from "./pages/Income";
 import Expense from "./pages/Expense";
+import Transactions from "./pages/Transactions";
 import Logout from "./pages/Logout";
 
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="/newpassword" element={<NewPassword/>}/>
           <Route path="/income" element={<Income/>}/>
           <Route path="/expense" element={<Expense/>}/>
+          <Route path="/transactions" element={<Transactions/>}/>
           <Route path="/logout" element={<Logout/>}/>
           
         </Routes>

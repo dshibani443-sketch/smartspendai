@@ -1,10 +1,30 @@
+import React, { useEffect, useState } from "react";
+import API from "../services/api";
+
+
+
 const RecentTransactions = () => {
-  const transactions = [
-    { date: "12 Mar", name: "Swiggy", category: "Food", amount: 350, status: "New" },
-    { date: "11 Mar", name: "Salary", category: "Income", amount: 25000, status: "New" },
-    { date: "10 Mar", name: "Uber", category: "Travel", amount: 220, status: "Done" },
-    { date: "09 Mar", name: "Amazon", category: "Shopping", amount: 410, status: "Done" },
-  ];
+
+
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+
+
+    // API will come later
+
+    // try {
+    //   const res = await API.get("/dashboard/monthly-expense");
+    //   setChartData(res.data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
 
   return (
     <>
@@ -31,11 +51,10 @@ const RecentTransactions = () => {
               <td>{t.category}</td>
               <td>₹{t.amount}</td>
               <td>
-                <span className={`px-3 py-1 rounded text-xs ${
-                  t.status === "New"
-                    ? "bg-blue-100 text-blue-600"
-                    : "bg-green-100 text-green-600"
-                }`}>
+                <span className={`px-3 py-1 rounded text-xs ${t.status === "New"
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-green-100 text-green-600"
+                  }`}>
                   {t.status}
                 </span>
               </td>
