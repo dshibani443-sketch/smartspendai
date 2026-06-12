@@ -23,7 +23,7 @@ export default function TransactionsPage() {
       console.log("Transactions:", res.data);
 
       const transactions = Array.isArray(res.data)
-        ? res.data.data
+        ? res.data
         : [];
 
       setIncomeList(
@@ -38,7 +38,6 @@ export default function TransactionsPage() {
       console.error(error);
 
       toast.error(
-        error.response?.data?.message ||
         "Failed to fetch transactions"
       );
     } finally {
@@ -52,21 +51,21 @@ export default function TransactionsPage() {
 
   const transactionList = useMemo(() => {
     const incomeTransactions = incomeList.map((item) => ({
-      id: `income-${item.id || item._id}`,
-      type: "income",
-      title: item.source || "Unknown Source",
-      date: item.date || "",
-      note: item.note || "",
+      id: `income-${item.id}`,
+      type: item.type,
+      title: item.title,
+      date: item.date,
+      note: item.note,
       amount: Number(item.amount),
     }));
 
     const expenseTransactions = expenseList.map((item) => ({
-      id: `expense-${item.id || item._id}`,
-      type: "expense",
-      title: item.category,
-      date: item.date || "",
-      note: item.note || "",
-      amount: Number(item.amount || 0),
+      id: `expense-${item.id}`,
+      type: item.type,
+      title: item.title,
+      date: item.date,
+      note: item.note,
+      amount: Number(item.amount),
     }));
 
     return [...incomeTransactions, ...expenseTransactions].sort(
@@ -88,7 +87,11 @@ export default function TransactionsPage() {
       if (filterType !== "all" && item.type !== filterType) return false;
       if (filterCategory !== "all" && item.title !== filterCategory)
         return false;
-      if (filterDate && item.date !== filterDate) return false;
+      if (
+        filterDate &&
+        item.date?.slice(0, 10) !== filterDate
+      )
+        return false;
       if (filterMonth) {
         const itemMonth = item.date?.slice(0, 7);
         if (itemMonth !== filterMonth) return false;
