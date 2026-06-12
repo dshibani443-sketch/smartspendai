@@ -27,26 +27,13 @@ function Cards() {
   const fetchDashboard = async () => {
     try {
 
-      // ==========================
-      // DASHBOARD SUMMARY API
-      // GET /api/dashboard
-      //
-      // Response:
-      // {
-      //   totalIncome,
-      //   totalExpense,
-      //   totalBalance,
-      //   savings
-      // }
-      // ==========================
-
-      // const res = await API.get("/dashboard");
-      // setData(res.data);
+      const res = await API.get("/dashboard/summary");
+      setData(res.data);
 
     } catch (err) {
       console.log(err);                                 //this line to be remove later
-      // toast.error(err.response?.data?.message || "Failed to load dashboard");
-    }finally {
+      toast.error(err.response?.data?.message || "Failed to load dashboard");
+    } finally {
       setLoading(false);
     }
   };

@@ -17,24 +17,29 @@ export default function TransactionsPage() {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const [incomeRes, expenseRes] = await Promise.all([
-        API.get("/income/"),
-        API.get("/expense/"),
-      ]);
 
-      console.log("Income Response:", incomeRes.data); // Debug log
-      console.log("Expense Response:", expenseRes.data); // Debug log
+      const res = await API.get("/transactions");
+
+      console.log("Transactions:", res.data);
+
+      const transactions = Array.isArray(res.data)
+        ? res.data.data
+        : [];
 
       setIncomeList(
-        Array.isArray(incomeRes.data.data) ? incomeRes.data.data : []
+        transactions.filter((item) => item.type === "income")
       );
+
       setExpenseList(
-        Array.isArray(expenseRes.data.data) ? expenseRes.data.data : []
+        transactions.filter((item) => item.type === "expense")
       );
+
     } catch (error) {
-      console.error("Error fetching transactions:", error); // Debug log
+      console.error(error);
+
       toast.error(
-        error.response?.data?.message || "Failed to fetch transactions"
+        error.response?.data?.message ||
+        "Failed to fetch transactions"
       );
     } finally {
       setLoading(false);

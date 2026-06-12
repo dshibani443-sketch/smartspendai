@@ -18,27 +18,16 @@ const CategoryChart = () => {
     fetchCategoryExpense();
   }, []);
 
+  
+  
   const fetchCategoryExpense = async () => {
-
-    // ==========================
-    // CATEGORY EXPENSE API
-    // GET /api/dashboard/category-expense
-    //
-    // Response:
-    // [
-    //   {
-    //      category:"Food",
-    //      amount:2000
-    //   }
-    // ]
-    // ==========================
-
-    // const res = await API.get(
-    //   "/dashboard/category-expense"
-    // );
-    //
-    // setCategoryData(res.data);
-
+    try {
+      const res = await API.get("/dashboard/category-expense"); 
+      setCategoryData(res.data);
+    } catch (err) {
+      console.log(err);                  //this line to be remove later   
+      toast.error(err.response?.data?.message || "Failed to load category data");
+    }
   };
 
 

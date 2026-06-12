@@ -50,16 +50,13 @@ const ExpenseChart = () => {
   }, []);
 
   const fetchMonthlyExpense = async () => {
-
-    // ==========================
-    // MONTHLY EXPENSE API
-    
-    // try {
-    //   const res = await API.get("/dashboard/monthly-expense");
-    //   setChartData(res.data);
-    // } catch (error) {
-    //   console.log(error);        
-    // }
+    try {
+      const res = await API.get("/dashboard/monthly");
+      setChartData(res.data);
+    } catch (err) {
+      console.log(err);                  //this line to be remove later
+      toast.error(err.response?.data?.message || "Failed to load monthly expenses");
+    } 
   };
 
 
