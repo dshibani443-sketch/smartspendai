@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
 import { Wallet, TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
+import { toast } from "react-toastify";
 
 import Expensechart from "./Expensechart";
 import Recenttransactions from "./Recenttransactions";
@@ -31,8 +32,12 @@ function Cards() {
       setData(res.data);
 
     } catch (err) {
-      console.log(err);                                 //this line to be remove later
-      toast.error(err.response?.data?.message || "Failed to load dashboard");
+      console.log( "dashboard error", err);
+      if(err.response){
+        console.log(err.response.data);
+        console.log(err.response.status);
+      }                                 //this line to be remove later
+      toast.error("Failed to load dashboard");
     } finally {
       setLoading(false);
     }
