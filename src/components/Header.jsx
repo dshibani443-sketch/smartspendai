@@ -1,17 +1,32 @@
-import { useEffect, useState, useContext  } from "react";
-import { Search, Bell, Moon } from "lucide-react";
+import { useEffect, useState, useContext } from "react";
+import { Search, Bell, Moon, Sun } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
 
 function Header() {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        try {
+            const stored = localStorage.getItem("theme");
+            if (stored) return stored === "dark";
+            return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        } catch (e) {
+            return false;
+        }
+    });
      const {user} = useContext(AuthContext)
 
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
+        try {
+            if (darkMode) {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.documentElement.removeAttribute("data-theme");
+                localStorage.setItem("theme", "light");
+            }
+        } catch (e) {
+            if (darkMode) document.documentElement.setAttribute("data-theme", "dark");
+            else document.documentElement.removeAttribute("data-theme");
         }
     }, [darkMode]);
 
@@ -41,10 +56,12 @@ function Header() {
 
                 {/* Dark Mode Toggle */}
                 <button
-                    onClick={() => setDarkMode(!darkMode)}
+                    onClick={() => setDarkMode((s) => !s)}
                     className="cursor-pointer"
+                    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                    title={darkMode ? "Light mode" : "Dark mode"}
                 >
-                    <Moon size={25} />
+                    {darkMode ? <Sun size={25} /> : <Moon size={25} />}
                 </button>
 
                 {/* User Name */}

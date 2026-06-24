@@ -1,44 +1,65 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import API from "../services/api";
+import { toast } from "react-toastify"; // ✅ Toast for error handling
 
 // ✅ REQUIRED imports
 import {
   Chart as ChartJS,
-  LineElement,
   CategoryScale,
   LinearScale,
-  PointElement,
+  BarElement,
   Tooltip,
   Legend,
-  Filler,
+
 } from "chart.js";
 
 // ✅ REGISTER ONCE
 ChartJS.register(
-  LineElement,
+
   CategoryScale,
   LinearScale,
-  PointElement,
+  BarElement,
   Tooltip,
-  Legend,
-  Filler
+  Legend
+
 );
 
 const ExpenseChart = () => {
+  console.log("ExpenseChart component rendered"); // Debugging line
 
   const [chartData, setChartData] = useState([]);
 
-  const data = {
-    labels: chartData.map(item => item.month),
+  const months = [
+    "",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
+  const data = {
+    labels: chartData.map((item) => {
+      const monthIndex = Number(item.month);
+      return months[monthIndex] || item.month || "Unknown";
+    }),
     datasets: [
       {
         label: "Expenses",
-        data: chartData.map(item => item.expense),
-        borderColor: "#3b82f6",
-        backgroundColor: "rgba(59,130,246,0.2)",
-        tension: 0.4,
-        fill: true,
+        data: chartData.map((item) => item.amount),
+        backgroundColor: "#3b82f6",
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 18,
+        maxBarThickness: 20,
       },
     ],
   };
@@ -53,10 +74,13 @@ const ExpenseChart = () => {
     try {
       const res = await API.get("/dashboard/monthly");
       setChartData(res.data);
+      console.log("Monthly Expense Data:", res.data); // Debugging line
     } catch (err) {
-      console.log(err);                  //this line to be remove later
-      toast.error(err.response?.data?.message || "Failed to load monthly expenses");
-    } 
+      console.log(err);
+      console.log(err.response);
+      console.log(err.response?.data);
+      console.log(err.message);
+    }
   };
 
 
@@ -64,18 +88,41 @@ const ExpenseChart = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => `₹${context.parsed.y}`,
+        },
+      },
+    },
     scales: {
       x: {
+        grid: {
+          display: false,
+        },
         ticks: {
-          color: "#000000",
+          color: "#64748b",
           font: {
-            size: 14,
-            weight: "bold"
-          }
-        }
-      }
-    }
+            size: 12,
+          },
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "#e5e7eb",
+        },
+        ticks: {
+          color: "#64748b",
+          font: {
+            size: 12,
+          },
+        },
+      },
+    },
   };
 
   return (
@@ -85,7 +132,7 @@ const ExpenseChart = () => {
       </h2>
 
 
-      <Line className="" key="expense-chart" data={data} options={options} />
+      <Bar className="" key="expense-chart" data={data} options={options} />
     </div>
   );
 };

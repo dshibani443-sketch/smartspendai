@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
+import { toast } from "react-toastify";
+import API from "../services/api"; // ✅ API Base URL
 
 import {
   Chart as ChartJS,
@@ -22,7 +24,7 @@ const CategoryChart = () => {
   
   const fetchCategoryExpense = async () => {
     try {
-      const res = await API.get("/dashboard/category-expense"); 
+      const res = await API.get("/dashboard/category"); 
       setCategoryData(res.data);
     } catch (err) {
       console.log(err);                  //this line to be remove later   

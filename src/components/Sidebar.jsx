@@ -19,7 +19,7 @@ function Sidebar({ isOpen = false, onClose }) {
     const {user} = useContext(AuthContext)
     console.log(user);
 
-    const sidebarClasses = `fixed inset-y-0 left-0 z-40 w-[280px] max-w-[80%] transform bg-slate-900 text-white flex flex-col justify-between transition-transform duration-300 shadow-xl sm:relative sm:translate-x-0 sm:w-70 sm:max-w-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`;
+    const sidebarClasses = `fixed inset-y-0 left-0 z-40 w-[280px] max-w-[80%] transform bg-white text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col justify-between transition-transform duration-300 shadow-xl sm:relative sm:translate-x-0 sm:w-70 sm:max-w-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`;
 
     return (
         <div className={sidebarClasses}>
@@ -27,7 +27,7 @@ function Sidebar({ isOpen = false, onClose }) {
                 <div className="text-lg font-semibold">Menu</div>
                 <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
                     onClick={onClose}
                     aria-label="Close menu"
                 >
@@ -54,24 +54,24 @@ function Sidebar({ isOpen = false, onClose }) {
                 {/* Menu */}
                 <ul className="mt-5 space-y-2 px-3">
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg bg-slate-800 cursor-pointer">
+                    <li className="flex items-center gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800 cursor-pointer">
                         <Home size={20} />
                         Dashboard
                     </li>
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
+                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                         <Wallet size={20} />
                         <NavLink to="/income">Income</NavLink> {/* page add methode is that*/}
 
                     </li>
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
+                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                         <CreditCard size={20} />
                         <NavLink to="/Expense">Expenses</NavLink> {/* page add methode is that*/}
 
                     </li>
 
-                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
+                    <li className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                         <Repeat size={20} />
                         <NavLink to="/transactions">Transactions</NavLink>
                     </li>
@@ -94,7 +94,7 @@ function Sidebar({ isOpen = false, onClose }) {
             </div>
 
             {/* Bottom Section */}
-            <div className="p-4 border-t border-slate-700">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-3">
 
                     {/* Avatar */}
@@ -106,8 +106,8 @@ function Sidebar({ isOpen = false, onClose }) {
 
                     {/* User Info */}
                     <div className="flex flex-col">
-                        <span className="text-sm font-semibold">{user.username}</span>
-                        <span className="text-xs text-slate-400">{user.email}</span>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white">{user.username}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{user.email}</span>
                     </div>
 
                 </div>

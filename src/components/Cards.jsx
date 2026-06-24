@@ -3,7 +3,7 @@ import API from "../services/api";
 import { Wallet, TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
 import { toast } from "react-toastify";
 
-import Expensechart from "./Expensechart";
+import ExpenseChart from "./Expensechart";
 import Recenttransactions from "./Recenttransactions";
 import AIPrediction from "./AIPrediction";
 import Categorychart from "./Categorychart";
@@ -68,6 +68,7 @@ function Cards() {
       amount: `₹${data.totalIncome}`,
       subtitle: "This Month",
       extra: `+${incomePercent}%`,
+      extraColor: "text-green-500",
       icon: TrendingUp,
       color: "bg-green-100 text-green-600",
     },
@@ -76,6 +77,7 @@ function Cards() {
       amount: `₹${data.totalExpense}`,
       subtitle: "This Month",
       extra: `-${expensePercent}%`,
+      extraColor: "text-red-500",
       icon: TrendingDown,
       color: "bg-red-100 text-red-600",
     },
@@ -84,6 +86,7 @@ function Cards() {
       amount: `₹${data.savings}`,
       subtitle: "This Month",
       extra: `${incomePercent}%`,
+      extraColor: "text-green-500",
       icon: PiggyBank,
       color: "bg-purple-100 text-purple-600",
     },
@@ -97,42 +100,39 @@ function Cards() {
     <div className="p-4 sm:p-6">
 
       {/* 🔹 Top Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
         {cards.map((card, index) => {
           const Icon = card.icon;
 
           return (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 flex items-center justify-between hover:shadow-md transition"
+              className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-3 hover:shadow-md transition"
             >
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {card.title}
-                </p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {card.title}
+                  </p>
 
-                <h3 className="text-2xl font-semibold mt-2 text-gray-800 dark:text-white">
-                  {card.amount}
-                </h3>
+                  <h3 className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
+                    {card.amount}
+                  </h3>
 
-                <div className="flex flex-wrap items-center gap-2 text-sm mt-2">
-                  <span className="text-gray-400">{card.subtitle}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-sm mt-2">
+                    <span className="text-gray-400">{card.subtitle}</span>
 
-                  {card.extra && (
-                    <span
-                      className={`font-medium ${card.extra.includes("+")
-                        ? "text-green-500"
-                        : "text-red-500"
-                        }`}
-                    >
-                      {card.extra}
-                    </span>
-                  )}
+                    {card.extra && (
+                      <span className={`font-medium ${card.extraColor || (card.extra.includes("+") ? "text-green-500" : "text-red-500")}`}>
+                        {card.extra}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <div className={`p-3 rounded-2xl ${card.color}`}>
-                <Icon size={22} />
+                <div className={`flex h-10 w-10 items-center justify-center rounded-3xl ${card.color}`}>
+                  <Icon size={18} />
+                </div>
               </div>
             </div>
           );
@@ -140,21 +140,25 @@ function Cards() {
       </div>
 
       {/* 🔹 Charts + AI Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-6">
 
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
-          <Expensechart />
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-3xl shadow overflow-hidden min-h-[360px]">
+          {/* reduced chart card height for improved compact layout */}
+          <ExpenseChart />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow overflow-hidden min-h-[360px]">
+          {/* reduced category card height for improved compact layout */}
           <Categorychart />
         </div>
 
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow overflow-hidden">
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-3xl shadow overflow-hidden min-h-[360px]">
+          {/* slightly reduced transaction table height */}
           <Recenttransactions />
         </div>
 
-        <div className="bg-linear-to-br from-blue-900 to-blue-600 text-white p-4 rounded-2xl shadow overflow-hidden">
+        <div className="bg-gradient-to-br from-blue-900 to-blue-600 text-white p-4 rounded-3xl shadow overflow-hidden min-h-[180px]">
+          {/* reduced AI card height for a tighter dashboard */}
           <AIPrediction />
         </div>
 
