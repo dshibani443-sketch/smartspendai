@@ -64,7 +64,7 @@ function Login() {
 
             // Step 1: login (cookie set here)
             const res = await API.post("/auth/login", form);
-            console.log(res.data);//remove later
+           
 
             // Step 2: get user data
 
@@ -86,7 +86,7 @@ function Login() {
 
         } catch (err) {
             if (err.response) {
-                console.log("Backend error:", err.response);
+                
                 toast.error(err.response.data.detail)
 
             } else {

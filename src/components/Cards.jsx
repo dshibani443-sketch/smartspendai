@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import ExpenseChart from "./Expensechart";
 import Recenttransactions from "./Recenttransactions";
 import AIPrediction from "./AIPrediction";
-import Categorychart from "./Categorychart";
+import CategoryChart from "./Categorychart";
 
 function Cards() {
 
@@ -32,10 +32,9 @@ function Cards() {
       setData(res.data);
 
     } catch (err) {
-      console.log( "dashboard error", err);
+      
       if(err.response){
-        console.log(err.response.data);
-        console.log(err.response.status);
+        
       }                                 //this line to be remove later
       toast.error("Failed to load dashboard");
     } finally {
@@ -149,7 +148,7 @@ function Cards() {
 
         <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow overflow-hidden min-h-[360px]">
           {/* reduced category card height for improved compact layout */}
-          <Categorychart />
+          <CategoryChart />
         </div>
 
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-3xl shadow overflow-hidden min-h-[360px]">

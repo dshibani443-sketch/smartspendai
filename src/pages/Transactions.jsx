@@ -20,7 +20,7 @@ export default function TransactionsPage() {
 
       const res = await API.get("/transactions");
 
-      console.log("Transactions:", res.data);
+      
 
       const transactions = Array.isArray(res.data)
         ? res.data

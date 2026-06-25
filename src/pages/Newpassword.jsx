@@ -41,8 +41,7 @@ function NewPassword() {
                 new_password: password,
                 reset_token: resetToken
             });
-            console.log(resetToken); //for check remove lettter
-            console.log(res);//for check remove lettter
+            
 
             toast.success("Password updated successfully."); 
             

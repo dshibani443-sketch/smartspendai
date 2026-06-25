@@ -13,7 +13,7 @@ function ForgotPassword() {
     const handleSendOTP = async () => {
     try {
         const res = await API.post("/auth/forgot-password", { email });
-        console.log(res); //later remove
+        
 
         if (res.data.success) {   // check backend flag
             toast.success("Otp send Successfully.")

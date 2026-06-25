@@ -17,7 +17,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 function Sidebar({ isOpen = false, onClose }) {
     const navigate = useNavigate();
     const {user} = useContext(AuthContext)
-    console.log(user);
+    
 
     const sidebarClasses = `fixed inset-y-0 left-0 z-40 w-[280px] max-w-[80%] transform bg-white text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col justify-between transition-transform duration-300 shadow-xl sm:relative sm:translate-x-0 sm:w-70 sm:max-w-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`;
 
@@ -84,7 +84,7 @@ function Sidebar({ isOpen = false, onClose }) {
                     <li>
                         {/* added by hasanur */}
                         <button onClick={() => navigate("/logout")}
-                        className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800 cursor-pointer">
+                        className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-red-600/80 hover:text-white text-slate-900 cursor-pointer">
                             <LogOut size={20} />
                             Logout
                         </button>

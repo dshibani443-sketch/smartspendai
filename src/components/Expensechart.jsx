@@ -26,7 +26,7 @@ ChartJS.register(
 );
 
 const ExpenseChart = () => {
-  console.log("ExpenseChart component rendered"); // Debugging line
+  
 
   const [chartData, setChartData] = useState([]);
 
@@ -56,7 +56,6 @@ const ExpenseChart = () => {
         label: "Expenses",
         data: chartData.map((item) => item.amount),
         backgroundColor: "#3b82f6",
-        borderRadius: 6,
         borderSkipped: false,
         barThickness: 18,
         maxBarThickness: 20,
@@ -74,12 +73,9 @@ const ExpenseChart = () => {
     try {
       const res = await API.get("/dashboard/monthly");
       setChartData(res.data);
-      console.log("Monthly Expense Data:", res.data); // Debugging line
+      
     } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      console.log(err.response?.data);
-      console.log(err.message);
+      toast.error(err.response?.data?.message || "Failed to load monthly expense data");
     }
   };
 

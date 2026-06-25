@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { toast } from "react-toastify";
@@ -13,6 +14,7 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CategoryChart = () => {
+  
 
   const [categoryData, setCategoryData] = useState([]);
 
@@ -25,9 +27,11 @@ const CategoryChart = () => {
   const fetchCategoryExpense = async () => {
     try {
       const res = await API.get("/dashboard/category"); 
+
+      
       setCategoryData(res.data);
     } catch (err) {
-      console.log(err);                  //this line to be remove later   
+        
       toast.error(err.response?.data?.message || "Failed to load category data");
     }
   };
@@ -35,15 +39,31 @@ const CategoryChart = () => {
 
   const categories = categoryData;
 
+    const colors = [
+    "#FF6384",
+    "#36A2EB",
+    "#FFCE56",
+    "#4BC0C0",
+    "#9966FF",
+    "#FF9F40",
+    "#8BC34A",
+    "#E91E63",
+  ];
+
   // 🔢 Total Calculation
   const total = categories.reduce((sum, item) => sum + item.amount, 0);
 
   const data = {
-    labels: categories.map((c) => c.name),
+    labels: categories.map((c) => c.category),
+
     datasets: [
       {
         data: categories.map((c) => c.amount),
-        backgroundColor: categories.map((c) => c.color),
+
+        backgroundColor: categories.map(
+          (_, index) => colors[index % colors.length]
+        ),
+
         borderWidth: 1,
       },
     ],
@@ -61,7 +81,7 @@ const CategoryChart = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
         Expense by Category
       </h2>
 
@@ -89,10 +109,10 @@ const CategoryChart = () => {
                 <div className="flex items-center gap-2">
                   <span
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: colors[index % colors.length], }}
                   ></span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    {item.name}
+                    {item.category}
                   </span>
                 </div>
 
